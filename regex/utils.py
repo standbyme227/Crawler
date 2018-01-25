@@ -1,33 +1,23 @@
-
-
 import re
-
-__all__ = (
-    'get_tag_attribute',
-    'get_tag_contaent',
-)
-
 
 import requests
 
-
+__all__ = (
+    'get_tag_attribute',
+    'get_tag_content',
+    'find_tag',
+)
 
 
 def save_melon():
-
-    '''
+    """
     멜론 사이트의 인기차트 1~50위에 해당하는 페이지를 melon.html로 저장
     :return: None
-    '''
+    """
     response = requests.get('https://www.melon.com/chart/index.htm')
     source = response.text
     with open('melon.html', 'wt') as f:
         f.write(source)
-
-
-
-
-
 
 
 def get_tag_attribute(attribute_name, tag_string):
@@ -49,8 +39,6 @@ def get_tag_attribute(attribute_name, tag_string):
     return ''
 
 
-
-
 def get_tag_content(tag_string):
     """
     특정 tag문자열(tag_string)이 가진 내용을 리턴
@@ -66,18 +54,20 @@ def get_tag_content(tag_string):
         return ''
     return tag_string
 
-def find_tag(tag, tag_string, class = None):
+
+def find_tag(tag, tag_string, class_=None):
     """
     tag_string에서 tag요소를 찾아 리턴
     :param tag: 찾을 tag명
     :param tag_string: 검색할 tag문자열
+    :param class_: 검색할 tag의 클래스
     :return: 첫 번째로 찾은 tag문자열
     """
-
-    p = re.compile(r'.*(<{tag{.*?</{tag}>)'.format(
+    p = re.compile(r'.*?(<{tag}.*?{class_}.*?>.*?</{tag}>)'.format(
         tag=tag,
-        class=f'class=.*{class_}.*' if class_ else '',), re.DOTTALL)
-    print(f'find_tag (tag: {tag}, class:')
+        class_=f'class=".*?{class_}.*?"' if class_ else '',
+    ), re.DOTALL)
+    # print(f'find_tag (tag: {tag}, class: {class_}, pattern: {p}')
     m = re.search(p, tag_string)
     if m:
         return m.group(1)
