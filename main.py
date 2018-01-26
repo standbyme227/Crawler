@@ -1,12 +1,10 @@
-import re
-from bs4 import BeautifulSoup
-from utils import get_top100_list
-from utils import get_song_detail
 
-from bs4 import BeautifulSoup
-import re
-
+from utils import get_top100_list, get_song_detail
 
 if __name__ == '__main__':
     result = get_top100_list()
-    result = get_song_detail()
+    for item in result:
+        print(f'{item["rank"]:3}: {item["song_id"]}|{item["title"]}')
+
+    # 예제
+    result_detail = get_song_detail('30781481')
